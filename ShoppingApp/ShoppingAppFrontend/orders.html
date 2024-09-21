@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background-color: #88d2f2;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            margin: 0;
+        }
+        
+        nav {
+            background-color: #f0c424;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        nav a:hover {
+            color: #ccc;
+        }
+        
+        h2 {
+            margin-top: 20px;
+        }
+        
+        input[type="text"], textarea, input[type="number"] {
+            padding: 10px;
+            margin: 10px;
+            border: 1px solid #2578ac;
+        }
+        
+        button {
+            background-color: #b63131;
+            color: #cebf1e;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #3e8e41;
+        }
+        
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #d9db95;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #a7f6f9;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tbody tr:hover {
+            background-color: #3a9f52;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Order Management</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="products.html">Products</a>
+            <a href="users.html">Users</a>
+        </nav>
+    </header>
+
+    <h2>Create Order</h2>
+    <input type="text" id="name" placeholder="Product Name" required />
+    <textarea id="orderDescription" placeholder="Order Description"></textarea>
+    <input type="number" id="orderPrice" placeholder="Order Price" required />
+    <button onclick="createOrder()">Create Order</button>
+
+    <h2>All Orders</h2>
+    <table id="orderTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Order Name</th>
+                <th>Description</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="orderList"></tbody>
+    </table>
+
+    <script>
+        const apiUrl = 'http://localhost:9009/orders'; // Adjust based on your API endpoint
+
+        async function fetchOrders() {
+            try {
+                const response = await fetch(`${apiUrl}/getorders`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const orders = await response.json();
+                const orderTable = document.getElementById('orderTable');
+                const orderList = document.getElementById('orderList');
+                orderList.innerHTML = '';
+                orders.forEach(order => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${order.id}</td>
+                        <td>${order.name}</td>
+                        <td>${order.description}</td>
+                        <td>$${order.price}</td>
+                    `;
+                    orderList.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+
+        async function createOrder() {
+            const name = document.getElementById('name').value;
+            const description = document.getElementById('orderDescription').value;
+            const price = parseFloat(document.getElementById('orderPrice').value);
+            
+            const order = { name, description, price };
+
+            try {
+                const response = await fetch(`${apiUrl}/createorder`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(order),
+                });
+
+                if (response.ok) {
+                    alert('Order created successfully!');
+                    fetchOrders(); // Refresh order list
+                } else {
+                    alert('Failed to create order.');
+                }
+            } catch (error) {
+                console.error('Error creating order:', error);
+            }
+        }
+
+        // Fetch orders on page load
+        fetchOrders();
+    </script>
+</body>
+</html>

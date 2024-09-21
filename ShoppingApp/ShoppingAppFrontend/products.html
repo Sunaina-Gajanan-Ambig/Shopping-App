@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shopping App - Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        
+        nav {
+            background-color: #444;
+            padding: 10px;
+            text-align: center;
+        }
+        
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        
+        nav a:hover {
+            color: #ccc;
+        }
+        
+        h1 {
+            margin-top: 20px;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px auto;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f0f0f0;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tbody tr:hover {
+            background-color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Products</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="users.html">Users</a>
+    </nav>
+    <table id="products-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody id="products-tbody">
+            <!-- products will be displayed here  -->
+        </tbody>
+    </table>
+
+    <!-- Add your JavaScript code here to populate the products table -->
+    <script>
+        // Your JavaScript code goes here
+    </script>
+
+    <script>
+        const apiUrl = 'http://localhost:9009/api/products';
+        // JavaScript function to display all products
+        function displayProducts() {
+            // Send a GET request to the ProductService to retrieve all products
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(products => {
+                    const tbody = document.getElementById('products-tbody');
+                    products.forEach(product => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${product.id}</td>
+                            <td>${product.name}</td>
+                            <td>${product.price}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Call the displayProducts function when the page loads
+        document.addEventListener('DOMContentLoaded', displayProducts);
+    </script>
+</body>
+</html> 
+
+

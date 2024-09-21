@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Users</title>
+        <style>
+            /* Add some basic styling to make the UI look better */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #e9e9e9; /* Light beige background */
+            }
+            
+            header {
+                background-color: #00698f; /* Dark blue background */
+                color: #fff; /* White text */
+                padding: 20px;
+                text-align: center;
+            }
+            
+            h1 {
+                font-size: 30px;
+                margin-bottom: 10px;
+            }
+            
+            nav {
+                background-color: #0099cc; /* Light blue background */
+                padding: 10px;
+                text-align: center;
+            }
+            
+            nav a {
+                color: #fff; /* White text */
+                text-decoration: none;
+                margin: 0 20px;
+            }
+            
+            nav a:hover {
+                color: #ccc; /* Light gray text on hover */
+            }
+            
+            #userList {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            
+            #userList li {
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+            
+            #userList li:hover {
+                background-color: #f0f0f0; /* Light gray background on hover */
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>User Management</h1>
+            <nav>
+                <a href="index.html">Home</a>
+                <a href="products.html">Products</a>
+                <a href="orders.html">Orders</a>
+            </nav>
+        </header>
+        <h2>User List</h2>
+        <ul id="userList"></ul>
+        
+   
+
+    <script>
+        const apiUrl = 'http://localhost:9009/a/users'; // Adjust based on your API endpoint
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const users = await response.json();
+                const userList = document.getElementById('userList');
+                userList.innerHTML = '';
+                users.forEach(user => {
+                    if (user && user.username) {
+                        const li = document.createElement('li');
+                        li.textContent = `${user.username}`;
+                        userList.appendChild(li);
+                    } else {
+                        console.error('Invalid user data:', user);
+                    }
+                });
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        }
+
+        // Fetch users on page load
+        fetchUsers();
+    </script>
+</body>
+</html>
